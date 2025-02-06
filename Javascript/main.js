@@ -12,15 +12,79 @@ class Task {
 }
 class TaskManager {
     constructor() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.onApplicationStart();
-        });
+        this.onApplicationStart();
     }
 
     onApplicationStart() {
-        let tasks = this.fetchTasksFromLocalStorage();
-        console.log(tasks);
-        this.renderTasksToUI(tasks);
+        this.addEventListeners();
+    }
+
+    addEventListeners() {
+        document.addEventListener('DOMContentLoaded', () => {
+            let tasks = this.fetchTasksFromLocalStorage();
+            this.renderTasksToUI(tasks);
+        });
+
+        let addNewTaskButton = document.querySelector('.add-btn');
+        addNewTaskButton.addEventListener('click', () => {
+            this.addNewTask();
+        });
+    }
+
+    addNewTask() {
+
+        let taskTitleInput = document.querySelector('.task-input');
+        let taskCategorySelect = document.querySelector('.category-select');
+        let taskDeadlineInput = document.querySelector('.deadline-input');
+
+        // Validate title is alphanumeric
+        if (!taskTitleInput.value || !/^[a-zA-Z0-9\s]+$/.test(taskTitleInput.value)) {
+            alert('Title must contain only letters and numbers!');
+            return;
+        }
+
+        // Validate category is not empty
+        if (!taskCategorySelect.value) {
+            alert('Category is required!');
+            return;
+        }
+
+        // Validate deadline is a valid date
+        const parsedDate = new Date(taskDeadlineInput.value);
+        if (isNaN(parsedDate.getTime())) {
+            alert('Invalid date!');
+            return;
+        }
+
+        let taskData = {
+            title: taskTitleInput.value,
+            category: taskCategorySelect.value,
+            expiryDate: taskDeadlineInput.value
+        };
+
+        let newTask = this.storeNewTaskInLocalStorage(taskData);
+        let allTasks = this.fetchTasksFromLocalStorage();
+        this.renderTasksToUI(allTasks);
+
+        this.clearAddNewTaskInputFields();
+    }
+
+    clearAddNewTaskInputFields() {
+        let taskTitleInput = document.querySelector('.task-input');
+        let taskCategorySelect = document.querySelector('.category-select');
+        let taskDeadlineInput = document.querySelector('.deadline-input');
+
+        taskTitleInput.value = '';
+        taskCategorySelect.value = '';
+        taskDeadlineInput.value = '';
+    }
+
+    storeNewTaskInLocalStorage(taskData) {
+        const tasks = this.fetchTasksFromLocalStorage();
+        const newTask = new Task(taskData);
+        tasks.unshift(newTask);
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(tasks));
+        return newTask;
     }
 
     renderTasksToUI(tasks) {
@@ -56,14 +120,6 @@ class TaskManager {
         const tasks = JSON.parse(storedTasks) || [];
         return tasks.map(taskData => new Task(taskData));
     }
-
-    createTask(taskData) {
-        const tasks = this.fetchTasksFromLocalStorage();
-        const newTask = new Task(taskData);
-        tasks.push(newTask);
-        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(tasks));
-        return newTask;
-    }
 }
 
-let applicationManager = new TaskManager()
+let applicationManager = new TaskManager();
