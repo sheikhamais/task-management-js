@@ -19,7 +19,7 @@ body {
 .input-group {
     display: flex;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
@@ -44,6 +44,54 @@ body {
     padding: 0.7rem;
     border: 1px solid #ddd;
     border-radius: 6px;
+}
+
+/* Filter Section */
+.filter-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-category {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+}
+
+.filter-start-date,
+.filter-end-date {
+    flex: 1;
+    padding: 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.filter-btn,
+.clear-filter-btn {
+    padding: 0.8rem 1.5rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.filter-btn:hover,
+.clear-filter-btn:hover {
+    background: #45a049;
+}
+
+.clear-filter-btn {
+    background: #f44336;
+}
+
+.clear-filter-btn:hover {
+    background: #e53935;
 }
 
 /* Task List */
@@ -81,6 +129,35 @@ body {
 
 .add-btn:hover {
     background: #1976D2;
+}
+
+.edit-btn {
+    padding: 0.5rem 1rem;
+    background: #FFC107;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-right: 0.5rem;
+}
+
+.edit-btn:hover {
+    background: #FFA000;
+}
+
+.delete-btn {
+    padding: 0.5rem 1rem;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #e53935;
 }
 
 /* Utility Classes */

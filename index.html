@@ -12,9 +12,9 @@
     <div class="container">
         <h1>Task Manager</h1>
 
+        <!-- Task Creation Section -->
         <div class="input-group">
             <input type="text" class="task-input" placeholder="Enter new task...">
-
             <select class="category-select">
                 <option value="">Select Category</option>
                 <option value="personal">Personal</option>
@@ -22,18 +22,33 @@
                 <option value="shopping">Shopping</option>
                 <option value="study">Study</option>
             </select>
-
             <input type="date" class="deadline-input">
-
             <button class="add-btn">Add Task</button>
         </div>
 
+        <!-- Filter Section -->
+        <div class="filter-group">
+            <select class="filter-category">
+                <option value="">Filter by Category</option>
+                <option value="personal">Personal</option>
+                <option value="work">Work</option>
+                <option value="shopping">Shopping</option>
+                <option value="study">Study</option>
+            </select>
+            <input type="date" class="filter-start-date" placeholder="Start Date">
+            <input type="date" class="filter-end-date" placeholder="End Date">
+            <button class="filter-btn">Apply Filter</button>
+            <button class="clear-filter-btn">Clear Filter</button>
+        </div>
+
+        <!-- Task List -->
         <ul class="task-list">
             <!-- Example Task Item -->
             <li class="task-item">
                 <span class="task-title">Complete project proposal</span>
                 <span class="deadline">2023-08-25</span>
                 <span class="category-tag" style="background: #FFEEBA;">Work</span>
+                <button class="edit-btn">Edit</button>
                 <button class="delete-btn">×</button>
             </li>
         </ul>
