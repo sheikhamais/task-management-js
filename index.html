@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
     <link rel="stylesheet" href="Style/style.css">
 </head>
-
 <body>
     <div class="container">
         <h1>Task Manager</h1>
 
-        <!-- Task Creation Section -->
+        <!-- New Task Section -->
+        <h3 class="section-heading">New Task</h3>
         <div class="input-group">
             <input type="text" class="task-input" placeholder="Enter new task...">
             <select class="category-select">
@@ -26,7 +25,14 @@
             <button class="add-btn">Add Task</button>
         </div>
 
+        <!-- Search Section -->
+        <h3 class="section-heading">Search</h3>
+        <div class="search-group">
+            <input type="text" class="search-input" placeholder="Search tasks...">
+        </div>
+
         <!-- Filter Section -->
+        <h3 class="section-heading">Filters</h3>
         <div class="filter-group">
             <select class="filter-category">
                 <option value="">Filter by Category</option>
@@ -54,5 +60,4 @@
         </ul>
     </div>
 </body>
-
 </html>
