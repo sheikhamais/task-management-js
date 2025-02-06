@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="Style/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Task Manager</h1>
+
+        <div class="input-group">
+            <input type="text" class="task-input" placeholder="Enter new task...">
+
+            <select class="category-select">
+                <option value="">Select Category</option>
+                <option value="personal">Personal</option>
+                <option value="work">Work</option>
+                <option value="shopping">Shopping</option>
+                <option value="study">Study</option>
+            </select>
+
+            <input type="date" class="deadline-input">
+
+            <button class="add-btn">Add Task</button>
+        </div>
+
+        <ul class="task-list">
+            <!-- Example Task Item -->
+            <li class="task-item">
+                <span class="task-title">Complete project proposal</span>
+                <span class="deadline">2023-08-25</span>
+                <span class="category-tag" style="background: #FFEEBA;">Work</span>
+                <button class="delete-btn">×</button>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
