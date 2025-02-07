@@ -35,21 +35,34 @@
         <!-- Filter Section -->
         <h3 class="section-heading">Filters</h3>
         <div class="filter-group">
-            <select class="filter-category">
-                <option value="">Filter by Category</option>
-                <option value="personal">Personal</option>
-                <option value="work">Work</option>
-                <option value="shopping">Shopping</option>
-                <option value="study">Study</option>
-            </select>
-            <div class="filter-dates">
-                <label for="filter-start-date">Start Date:</label>
-                <input type="date" id="filter-start-date" class="filter-start-date" placeholder="Start Date">
-                <label for="filter-end-date">End Date:</label>
-                <input type="date" id="filter-end-date" class="filter-end-date" placeholder="End Date">
+
+            <div class="filter-inputs">
+                <div class="filter-category-group">
+                    <label for="filter-category" class="filter-category-label">Category:</label>
+                    <select id="filter-category" class="filter-category">
+                        <option value="">Filter by Category</option>
+                        <option value="personal">Personal</option>
+                        <option value="work">Work</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="study">Study</option>
+                    </select>
+                </div>
+
+                <div class="filter-date">
+                    <label for="filter-start-date">Start Date:</label>
+                    <input type="date" id="filter-start-date" class="filter-start-date" placeholder="Start Date">
+                </div>
+
+                <div class="filter-date">
+                    <label for="filter-end-date">End Date:</label>
+                    <input type="date" id="filter-end-date" class="filter-end-date" placeholder="End Date">
+                </div>
             </div>
-            <button class="filter-btn">Apply Filter</button>
-            <button class="clear-filter-btn">Clear Filter</button>
+            
+            <div>
+                <button class="filter-btn">Apply Filter</button>
+                <button class="clear-filter-btn">Clear Filter</button>
+            </div>
         </div>
 
         <!-- Task List -->
