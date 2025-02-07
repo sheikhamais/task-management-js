@@ -49,9 +49,10 @@ body {
 /* Filter Section */
 .filter-group {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .filter-category {
@@ -62,9 +63,22 @@ body {
     background: white;
 }
 
-.filter-start-date,
-.filter-end-date {
-    flex: 1;
+.filter-dates {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+}
+
+.filter-dates label {
+    margin-bottom: 0.1rem;
+    margin-left: 0.2rem;
+    font-weight: lighter;
+    color: gray;
+    font-size: 0.6rem;
+}
+
+.filter-dates input {
+    margin-bottom: 0.5rem;
     padding: 0.7rem;
     border: 1px solid #ddd;
     border-radius: 6px;
