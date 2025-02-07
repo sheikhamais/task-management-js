@@ -10,10 +10,17 @@ class Task {
         this.expiryDate = expiryDate;
     }
 }
+
 class TaskManager {
 
     #allTasks = [];
     tasks = [];
+
+    appliedTasksFilter = {
+        category: null,
+        startDate: null,
+        endDate: null
+    };
 
     constructor() {
         this.onApplicationStart();
@@ -27,6 +34,7 @@ class TaskManager {
         document.addEventListener('DOMContentLoaded', () => {
             this.fetchTasksFromLocalStorage();
             this.renderTasksToUI();
+            this.updateFilterBarUI();
         });
 
         let addNewTaskButton = document.querySelector('.add-btn');
@@ -39,6 +47,50 @@ class TaskManager {
             const query = event.target.value.trim();
             this.performSearch(query);
         });
+
+        const applyFilterButton = document.querySelector('.filter-btn');
+        applyFilterButton.addEventListener('click', () => {
+            const categoryFilter = document.querySelector('#filter-category');
+            const startDateFilter = document.querySelector('#filter-start-date');
+            const endDateFilter = document.querySelector('#filter-end-date');
+
+            if (!categoryFilter.value && !startDateFilter.value && !endDateFilter.value) {
+                alert('Please select at least one filter!');
+                return;
+            }
+
+            if (startDateFilter.value && !endDateFilter.value) {
+                alert('Please select an end date!');
+                return;
+            }
+
+            this.appliedTasksFilter = {
+                category: categoryFilter.value,
+                startDate: startDateFilter.value,
+                endDate: endDateFilter.value
+            };
+
+            this.tasks = this.allTasks;
+
+            if (this.appliedTasksFilter.category) {
+                this.tasks = this.tasks.filter(task => task.category === this.appliedTasksFilter.category);
+            }
+
+            if (this.appliedTasksFilter.startDate && this.appliedTasksFilter.endDate) {
+                this.tasks = this.tasks.filter(task => {
+                    const taskDate = new Date(task.expiryDate);
+                    const startDate = new Date(this.appliedTasksFilter.startDate);
+                    const endDate = new Date(this.appliedTasksFilter.endDate);
+
+                    return taskDate >= startDate && taskDate <= endDate;
+                });
+            }
+
+            this.renderTasksToUI();
+            this.updateFilterBarUI();
+        });
+
+        const clearFilterButton = document.querySelector('.clear-filter-btn');
     }
 
     performSearch(query) {
@@ -90,7 +142,7 @@ class TaskManager {
         this.storeNewTaskInLocalStorage(taskData);
         this.fetchTasksFromLocalStorage();
         this.renderTasksToUI();
-        
+
         this.clearSearchField();
         this.clearFilters();
         this.clearAddNewTaskInputFields();
@@ -112,8 +164,12 @@ class TaskManager {
     }
 
     clearFilters() {
-        // let categoryFilter = document.querySelector('.category-filter');
-        // categoryFilter.value = '';
+        appliedTasksFilter = {
+            category: null,
+            startDate: null,
+            endDate: null
+        };
+        this.updateFilterBarUI();
     }
 
     storeNewTaskInLocalStorage(taskData) {
@@ -158,6 +214,28 @@ class TaskManager {
         const mappedTasks = tasks.map(taskData => new Task(taskData));
         this.tasks = mappedTasks;
         this.allTasks = mappedTasks; // Keep a copy of all tasks for filtering
+    }
+
+    updateFilterBarUI() {
+        const appliedFiltersContainer = document.querySelector('.applied-filters-container');
+        const categoryFilter = document.querySelector('.category-filter-text');
+        const datesFilter = document.querySelector('.dates-filter-text');
+
+        [appliedFiltersContainer, categoryFilter, datesFilter].forEach(element => {
+            element.style.display = 'none';
+        });
+
+        if (this.appliedTasksFilter.category) {
+            categoryFilter.textContent = `Category: ${this.appliedTasksFilter.category}`;
+            categoryFilter.style.display = 'inline-block';
+            appliedFiltersContainer.style.display = 'flex';
+        }
+
+        if (this.appliedTasksFilter.startDate && this.appliedTasksFilter.endDate) {
+            datesFilter.textContent = `Dates: ${this.appliedTasksFilter.startDate} - ${this.appliedTasksFilter.endDate}`;
+            datesFilter.style.display = 'inline-block';
+            appliedFiltersContainer.style.display = 'flex';
+        }
     }
 }
 
