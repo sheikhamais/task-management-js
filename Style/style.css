@@ -108,6 +108,28 @@ body {
     background: #e53935;
 }
 
+.applied-filters-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.applied-filter {
+    padding: 0.1rem 1rem;
+    background: #FFEEBA;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    font-weight: lighter;
+    color: gray;
+    font-size: 0.7rem;
+}
+
+.applied-filter-value {
+    color: rebeccapurple;
+    margin-left: 0.5rem;
+}
+
 /* Task List */
 .task-list {
     list-style: none;
@@ -186,6 +208,7 @@ body {
     font-size: 0.8rem;
     margin-left: auto;
     margin-right: 1rem;
+    background: #FFEEBA;
 }
 
 .deadline {
