@@ -12,6 +12,7 @@ class Task {
 }
 class TaskManager {
 
+    #allTasks = [];
     tasks = [];
 
     constructor() {
@@ -32,6 +33,27 @@ class TaskManager {
         addNewTaskButton.addEventListener('click', () => {
             this.addNewTask();
         });
+
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', (event) => {
+            const query = event.target.value.trim();
+            this.performSearch(query);
+        });
+    }
+
+    performSearch(query) {
+        if (query.length === 0) {
+            this.tasks = [...this.allTasks];
+            this.renderTasksToUI();
+        }
+
+        if (query.length < 2) { return; }
+
+        this.tasks = this.allTasks.filter(task =>
+            task.title.toLowerCase().includes(query.toLowerCase())
+        );
+
+        this.renderTasksToUI();
     }
 
     addNewTask() {
@@ -68,7 +90,9 @@ class TaskManager {
         this.storeNewTaskInLocalStorage(taskData);
         this.fetchTasksFromLocalStorage();
         this.renderTasksToUI();
-
+        
+        this.clearSearchField();
+        this.clearFilters();
         this.clearAddNewTaskInputFields();
     }
 
@@ -80,6 +104,16 @@ class TaskManager {
         taskTitleInput.value = '';
         taskCategorySelect.value = '';
         taskDeadlineInput.value = '';
+    }
+
+    clearSearchField() {
+        let searchInput = document.querySelector('.search-input');
+        searchInput.value = '';
+    }
+
+    clearFilters() {
+        // let categoryFilter = document.querySelector('.category-filter');
+        // categoryFilter.value = '';
     }
 
     storeNewTaskInLocalStorage(taskData) {
@@ -121,7 +155,9 @@ class TaskManager {
     fetchTasksFromLocalStorage() {
         const storedTasks = localStorage.getItem(StorageKeys.TASKS)
         const tasks = JSON.parse(storedTasks) || [];
-        this.tasks = tasks.map(taskData => new Task(taskData));
+        const mappedTasks = tasks.map(taskData => new Task(taskData));
+        this.tasks = mappedTasks;
+        this.allTasks = mappedTasks; // Keep a copy of all tasks for filtering
     }
 }
 
