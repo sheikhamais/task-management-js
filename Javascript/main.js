@@ -11,6 +11,9 @@ class Task {
     }
 }
 class TaskManager {
+
+    tasks = [];
+
     constructor() {
         this.onApplicationStart();
     }
@@ -21,8 +24,8 @@ class TaskManager {
 
     addEventListeners() {
         document.addEventListener('DOMContentLoaded', () => {
-            let tasks = this.fetchTasksFromLocalStorage();
-            this.renderTasksToUI(tasks);
+            this.fetchTasksFromLocalStorage();
+            this.renderTasksToUI();
         });
 
         let addNewTaskButton = document.querySelector('.add-btn');
@@ -62,9 +65,9 @@ class TaskManager {
             expiryDate: taskDeadlineInput.value
         };
 
-        let newTask = this.storeNewTaskInLocalStorage(taskData);
-        let allTasks = this.fetchTasksFromLocalStorage();
-        this.renderTasksToUI(allTasks);
+        this.storeNewTaskInLocalStorage(taskData);
+        this.fetchTasksFromLocalStorage();
+        this.renderTasksToUI();
 
         this.clearAddNewTaskInputFields();
     }
@@ -80,18 +83,18 @@ class TaskManager {
     }
 
     storeNewTaskInLocalStorage(taskData) {
-        const tasks = this.fetchTasksFromLocalStorage();
+        this.fetchTasksFromLocalStorage();
         const newTask = new Task(taskData);
-        tasks.unshift(newTask);
-        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(tasks));
+        this.tasks.unshift(newTask);
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.tasks));
         return newTask;
     }
 
-    renderTasksToUI(tasks) {
+    renderTasksToUI() {
         const list = document.querySelector('.task-list');
         if (!list) return;
         list.innerHTML = '';
-        tasks.forEach(task => {
+        this.tasks.forEach(task => {
             const item = document.createElement('li');
             item.className = 'task-item';
             const title = document.createElement('span');
@@ -118,7 +121,7 @@ class TaskManager {
     fetchTasksFromLocalStorage() {
         const storedTasks = localStorage.getItem(StorageKeys.TASKS)
         const tasks = JSON.parse(storedTasks) || [];
-        return tasks.map(taskData => new Task(taskData));
+        this.tasks = tasks.map(taskData => new Task(taskData));
     }
 }
 
