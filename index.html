@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="Style/style.css">
     <script defer src="Javascript/main.js"></script>
 </head>
+
 <body>
     <div class="container">
         <h1>Task Manager</h1>
@@ -58,15 +60,17 @@
                     <input type="date" id="filter-end-date" class="filter-end-date" placeholder="End Date">
                 </div>
             </div>
-            
+
             <div>
                 <button class="filter-btn">Apply Filter</button>
-                <button class="clear-filter-btn">Clear Filter</button>    
+                <button class="clear-filter-btn">Clear Filter</button>
             </div>
 
             <div class="applied-filters-container">
-                <span class="applied-filter category-filter-text">Category: <span class="applied-filter-value">Category</span></span>
-                <span class="applied-filter dates-filter-text">Date: <span class="applied-filter-value">Start - End</span></span>
+                <span class="applied-filter category-filter-text">Category: <span
+                        class="applied-filter-value">Category</span></span>
+                <span class="applied-filter dates-filter-text">Date: <span class="applied-filter-value">Start -
+                        End</span></span>
             </div>
         </div>
 
@@ -81,6 +85,32 @@
                 <button class="delete-btn">×</button>
             </li>
         </ul>
+
+        <!-- Edit popup view -->
+        <div id="edit-task-popup-container" class="dim-layer">
+            <div class="edit-task-popup">
+                <div class="popup-content">
+                    <h3>Edit Task</h3>
+                    <label>Title:</label>
+                    <input type="text" class="edit-task-title">
+                    <label>Category:</label>
+                    <select class="edit-task-category">
+                        <option value="personal">Personal</option>
+                        <option value="work">Work</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="study">Study</option>
+                    </select>
+                    <label>Deadline:</label>
+                    <input type="date" class="edit-task-deadline">
+                    <div class="edit-task-popup-action-buttons">
+                        <button class="save-edit-btn">Save</button>
+                        <button class="cancel-edit-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
+
 </html>

@@ -15,6 +15,7 @@ class TaskManager {
 
     #allTasks = [];
     tasks = [];
+    #taskToEdit = Task;
 
     tasksSearchFilterData = {
         searchTerm: null,
@@ -85,13 +86,32 @@ class TaskManager {
             this.updateFilterBarUI();
             this.renderTasksToUI();
         });
+
+        // Edit Task
+        const dimLayer = document.querySelector('.dim-layer');
+        const taskPopupContent = document.querySelector('.edit-task-popup');
+        const editTaskPopupContainer = document.querySelector('#edit-task-popup-container');
+
+        dimLayer.addEventListener('click', (event) => {
+            if (!taskPopupContent.contains(event.target)) {
+                editTaskPopupContainer.style.transform = 'translateY(-100%)';
+            }
+        });
+
+        document.querySelector('.save-edit-btn').addEventListener('click', () => {
+            this.saveEditedTask();
+            editTaskPopupContainer.style.transform = 'translateY(-100%)';
+        });
+
+        document.querySelector('.cancel-edit-btn').addEventListener('click', () => {
+            editTaskPopupContainer.style.transform = 'translateY(-100%)';
+        });
     }
 
     filterTasksByData() {
         this.tasks = this.allTasks;
 
         const searchTerm = this.tasksSearchFilterData.searchTerm || '';
-        console.log('searchTerm', searchTerm);
         if (searchTerm.length > 0) {
             this.tasks = this.tasks.filter(task =>
                 task.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -99,13 +119,10 @@ class TaskManager {
         }
 
         if (this.tasksSearchFilterData.category) {
-            console.log('category', this.tasksSearchFilterData.category);
             this.tasks = this.tasks.filter(task => task.category === this.tasksSearchFilterData.category);
         }
 
         if (this.tasksSearchFilterData.startDate && this.tasksSearchFilterData.endDate) {
-            console.log('startDate', this.tasksSearchFilterData.startDate);
-            console.log('endDate', this.tasksSearchFilterData.endDate);
             this.tasks = this.tasks.filter(task => {
                 const taskDate = new Date(task.expiryDate);
                 const startDate = new Date(this.tasksSearchFilterData.startDate);
@@ -122,22 +139,8 @@ class TaskManager {
         let taskCategorySelect = document.querySelector('.category-select');
         let taskDeadlineInput = document.querySelector('.deadline-input');
 
-        // Validate title is alphanumeric
-        if (!taskTitleInput.value || !/^[a-zA-Z0-9\s]+$/.test(taskTitleInput.value)) {
-            alert('Title must contain only letters and numbers!');
-            return;
-        }
-
-        // Validate category is not empty
-        if (!taskCategorySelect.value) {
-            alert('Category is required!');
-            return;
-        }
-
-        // Validate deadline is a valid date
-        const parsedDate = new Date(taskDeadlineInput.value);
-        if (isNaN(parsedDate.getTime())) {
-            alert('Invalid date!');
+        let validated = this.taskValuesValidation(taskTitleInput.value, taskCategorySelect.value, taskDeadlineInput.value);
+        if (!validated) {
             return;
         }
 
@@ -156,6 +159,33 @@ class TaskManager {
 
         this.updateFilterBarUI();
         this.clearAddNewTaskInputFields();
+    }
+
+    taskValuesValidation(title, category, deadline) {
+        if (!title || !/^[a-zA-Z0-9\s]+$/.test(title)) {
+            alert('Title must contain only letters and numbers!');
+            return false;
+        }
+
+        if (!category) {
+            alert('Category is required!');
+            return false;
+        }
+
+        const parsedDate = new Date(deadline);
+        if (isNaN(parsedDate.getTime())) {
+            alert('Invalid date!');
+            return false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (parsedDate < today) {
+            alert('Date must be today or later!');
+            return false;
+        }
+
+        return true;
     }
 
     clearAddNewTaskInputFields() {
@@ -215,6 +245,10 @@ class TaskManager {
             const editBtn = document.createElement('button');
             editBtn.className = 'edit-btn';
             editBtn.textContent = 'Edit';
+            editBtn.addEventListener('click', () => {
+                this.#taskToEdit = task;
+                this.showEditTaskPopup();
+            });
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
             deleteBtn.textContent = '×';
@@ -226,6 +260,41 @@ class TaskManager {
             item.append(title, deadline, category, editBtn, deleteBtn);
             list.appendChild(item);
         });
+    }
+
+    showEditTaskPopup() {
+        const editTaskPopupContainer = document.querySelector('#edit-task-popup-container');
+        editTaskPopupContainer.style.transform = 'translateY(0)';
+
+        const titleInput = document.querySelector('.edit-task-title');
+        titleInput.value = this.#taskToEdit.title;
+
+        const categorySelect = document.querySelector('.edit-task-category');
+        categorySelect.value = this.#taskToEdit.category;
+
+        const deadlineInput = document.querySelector('.edit-task-deadline');
+        deadlineInput.value = this.#taskToEdit.expiryDate;
+    }
+
+    saveEditedTask() {
+        const popup = document.querySelector('.edit-task-popup');
+        const title = popup.querySelector('.edit-task-title').value;
+        const category = popup.querySelector('.edit-task-category').value;
+        const deadline = popup.querySelector('.edit-task-deadline').value;
+
+        let isValidated = this.taskValuesValidation(title, category, deadline);
+        if (!isValidated) {
+            return;
+        }
+
+        const taskIndex = this.allTasks.findIndex(taskInstance => taskInstance.id === this.#taskToEdit.id);
+        this.allTasks[taskIndex].title = title;
+        this.allTasks[taskIndex].category = category;
+        this.allTasks[taskIndex].expiryDate = deadline;
+
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.allTasks));
+        this.filterTasksByData();
+        this.renderTasksToUI();
     }
 
     deleteTask(taskId) {
