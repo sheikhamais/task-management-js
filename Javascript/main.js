@@ -218,9 +218,21 @@ class TaskManager {
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
             deleteBtn.textContent = '×';
+            deleteBtn.addEventListener('click', () => {
+                if (confirm(`Are you sure you want to delete: ${task.title}?`)) {
+                    this.deleteTask(task.id);
+                }
+            });
             item.append(title, deadline, category, editBtn, deleteBtn);
             list.appendChild(item);
         });
+    }
+
+    deleteTask(taskId) {
+        this.allTasks = this.allTasks.filter(task => task.id !== taskId);
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.allTasks));
+        this.filterTasksByData();
+        this.renderTasksToUI();
     }
 
     fetchTasksFromLocalStorage() {
