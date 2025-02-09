@@ -3,11 +3,13 @@ const StorageKeys = Object.freeze({
 });
 
 class Task {
-    constructor({ id = crypto.randomUUID(), title, category, expiryDate }) {
+    constructor({ id = crypto.randomUUID(), title, category, expiryDate, notified, completed }) {
         this.id = id;
         this.title = title;
         this.category = category;
         this.expiryDate = expiryDate;
+        this.notified = notified;
+        this.completed = completed;
     }
 }
 
@@ -106,10 +108,27 @@ class TaskManager {
         document.querySelector('.cancel-edit-btn').addEventListener('click', () => {
             editTaskPopupContainer.style.transform = 'translateY(-100%)';
         });
+
+        // Tasks alert, checks after each minute
+        setInterval(() => {
+            this.checkDueTasks();
+        }, 60000);
+    }
+
+    checkDueTasks() {
+        const now = new Date();
+        this.#allTasks.forEach(task => {
+            const taskDate = new Date(task.expiryDate);
+            if (taskDate <= now && !task.notified) {
+                alert(`Task "${task.title}" is due!`);
+                task.notified = true;
+                localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.#allTasks));
+            }
+        });
     }
 
     filterTasksByData() {
-        this.tasks = this.allTasks;
+        this.tasks = this.#allTasks;
 
         const searchTerm = this.tasksSearchFilterData.searchTerm || '';
         if (searchTerm.length > 0) {
@@ -147,7 +166,9 @@ class TaskManager {
         let taskData = {
             title: taskTitleInput.value,
             category: taskCategorySelect.value,
-            expiryDate: taskDeadlineInput.value
+            expiryDate: taskDeadlineInput.value,
+            notified: false,
+            completed: false
         };
 
         this.storeNewTaskInLocalStorage(taskData);
@@ -287,19 +308,19 @@ class TaskManager {
             return;
         }
 
-        const taskIndex = this.allTasks.findIndex(taskInstance => taskInstance.id === this.#taskToEdit.id);
-        this.allTasks[taskIndex].title = title;
-        this.allTasks[taskIndex].category = category;
-        this.allTasks[taskIndex].expiryDate = deadline;
+        const taskIndex = this.#allTasks.findIndex(taskInstance => taskInstance.id === this.#taskToEdit.id);
+        this.#allTasks[taskIndex].title = title;
+        this.#allTasks[taskIndex].category = category;
+        this.#allTasks[taskIndex].expiryDate = deadline;
 
-        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.allTasks));
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.#allTasks));
         this.filterTasksByData();
         this.renderTasksToUI();
     }
 
     deleteTask(taskId) {
-        this.allTasks = this.allTasks.filter(task => task.id !== taskId);
-        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.allTasks));
+        this.#allTasks = this.#allTasks.filter(task => task.id !== taskId);
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.#allTasks));
         this.filterTasksByData();
         this.renderTasksToUI();
     }
@@ -309,7 +330,7 @@ class TaskManager {
         const tasks = JSON.parse(storedTasks) || [];
         const mappedTasks = tasks.map(taskData => new Task(taskData));
         this.tasks = mappedTasks;
-        this.allTasks = mappedTasks; // Keep a copy of all tasks for filtering
+        this.#allTasks = mappedTasks; // Keep a copy of all tasks for filtering
     }
 
     updateFilterBarUI() {
