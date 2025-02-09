@@ -249,7 +249,18 @@ class TaskManager {
     renderTasksToUI() {
         const list = document.querySelector('.task-list');
         if (!list) return;
-        list.innerHTML = '';
+
+        list.classList.add('fade-out');
+        setTimeout(() => {
+            list.innerHTML = '';
+            this.#generateTasksListInnerHtml();
+            list.classList.remove('fade-out');
+            list.classList.add('fade-in');
+        }, 500);
+    }
+
+    #generateTasksListInnerHtml() {
+        const list = document.querySelector('.task-list');
         this.tasks.forEach(task => {
             const item = document.createElement('li');
             item.className = 'task-item';
