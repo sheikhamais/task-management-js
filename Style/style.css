@@ -152,6 +152,19 @@ body {
     transition: box-shadow 0.2s ease;
 }
 
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.task-item.completed {
+    background-color: gainsboro;
+}
+
+.task-completion-checkbox {
+    margin-right: 12px;
+}
+
 /* Buttons */
 .add-btn {
     padding: 0.8rem 1.5rem;

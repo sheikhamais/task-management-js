@@ -253,16 +253,31 @@ class TaskManager {
         this.tasks.forEach(task => {
             const item = document.createElement('li');
             item.className = 'task-item';
+            if (task.completed) {
+                item.classList.add('completed');
+            }
+
+            const checkbox = document.createElement('input');
+            checkbox.className = 'task-completion-checkbox';
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.addEventListener('change', () => {
+                this.toggleTaskCompletion(task);
+            });
+
             const title = document.createElement('span');
             title.className = 'task-title';
             title.textContent = task.title;
+
             const deadline = document.createElement('span');
             deadline.className = 'deadline';
             deadline.textContent = task.expiryDate;
+
             const category = document.createElement('span');
             category.className = 'category-tag';
             category.style.background = '#FFEEBA';
             category.textContent = task.category;
+
             const editBtn = document.createElement('button');
             editBtn.className = 'edit-btn';
             editBtn.textContent = 'Edit';
@@ -270,6 +285,7 @@ class TaskManager {
                 this.#taskToEdit = task;
                 this.showEditTaskPopup();
             });
+
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
             deleteBtn.textContent = '×';
@@ -278,9 +294,16 @@ class TaskManager {
                     this.deleteTask(task.id);
                 }
             });
-            item.append(title, deadline, category, editBtn, deleteBtn);
+
+            item.append(checkbox, title, deadline, category, editBtn, deleteBtn);
             list.appendChild(item);
         });
+    }
+
+    toggleTaskCompletion(task) {
+        task.completed = !task.completed;
+        localStorage.setItem(StorageKeys.TASKS, JSON.stringify(this.#allTasks));
+        this.renderTasksToUI();
     }
 
     showEditTaskPopup() {
