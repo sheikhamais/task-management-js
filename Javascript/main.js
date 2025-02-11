@@ -1,17 +1,5 @@
-const StorageKeys = Object.freeze({
-    TASKS: 'tasks'
-});
-
-class Task {
-    constructor({ id = crypto.randomUUID(), title, category, expiryDate, notified, completed }) {
-        this.id = id;
-        this.title = title;
-        this.category = category;
-        this.expiryDate = expiryDate;
-        this.notified = notified;
-        this.completed = completed;
-    }
-}
+import { StorageKeys } from './utils.js';
+import { Task } from './task.js';
 
 class TaskManager {
 
@@ -55,25 +43,7 @@ class TaskManager {
 
         const applyFilterButton = document.querySelector('.filter-btn');
         applyFilterButton.addEventListener('click', () => {
-            const categoryFilter = document.querySelector('#filter-category');
-            const startDateFilter = document.querySelector('#filter-start-date');
-            const endDateFilter = document.querySelector('#filter-end-date');
-
-            if (!categoryFilter.value && !startDateFilter.value && !endDateFilter.value) {
-                alert('Please select at least one filter!');
-                return;
-            }
-
-            if (startDateFilter.value && !endDateFilter.value) {
-                alert('Please select an end date!');
-                return;
-            }
-
-            this.tasksSearchFilterData = {
-                category: categoryFilter.value,
-                startDate: startDateFilter.value,
-                endDate: endDateFilter.value
-            };
+            this.validateAndSetFilterData();
 
             this.filterTasksByData();
 
@@ -113,6 +83,34 @@ class TaskManager {
         setInterval(() => {
             this.checkDueTasks();
         }, 60000);
+    }
+
+    validateAndSetFilterData() {
+        const categoryFilter = document.querySelector('#filter-category');
+        const startDateFilter = document.querySelector('#filter-start-date');
+        const endDateFilter = document.querySelector('#filter-end-date');
+
+        if (!categoryFilter.value && !startDateFilter.value && !endDateFilter.value) {
+            alert('Please select at least one filter!');
+            return;
+        }
+
+        if (startDateFilter.value) {
+            if (!endDateFilter.value) {
+                alert('Please select an end date!');
+                return;
+            }
+
+            if (startDateFilter.value > endDateFilter.value) {
+                alert('Start date cannot be greater than end date!');
+                return;
+            }
+
+            this.tasksSearchFilterData.startDate = startDateFilter.value;
+            this.tasksSearchFilterData.endDate = endDateFilter.value;
+        }
+
+        this.tasksSearchFilterData.category = categoryFilter.value;
     }
 
     checkDueTasks() {
@@ -390,4 +388,5 @@ class TaskManager {
     }
 }
 
+// Initialize the application
 let applicationManager = new TaskManager();
